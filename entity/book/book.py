@@ -1,9 +1,19 @@
 
 class Book:
-    def __init__(self,title:str,author:str,description:str,price:float,image:str,file:str):
-        self.title = title
+    def __init__(self,name:str,author:str,desc:str,price:float,image:str,file:str):
+        self.name = name
         self.author = author
-        self.description = description
+        self.desc = desc
         self.price = price
         self.image = image
         self.file = file
+
+    def to_json(self):
+        return {
+            'name': self.name,
+            'author': self.author,
+            'desc': self.desc,
+            'price': self.price,
+            'image': self.image,
+            'file': self.file
+        }

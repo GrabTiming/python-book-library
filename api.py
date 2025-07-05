@@ -1,35 +1,31 @@
 """
 程序启动入口
 """
-from flask import Flask, request, logging
+import json
+from sys import prefix
+from typing import Dict, List, Any, Optional
 
-app = Flask(__name__)
+from flask import Flask
 
-# 设置全局日志级别（DEBUG/INFO/WARNING/ERROR/CRITICAL）
-app.logger.setLevel("INFO")
-@app.route('/hello')
-def hello_world():
-    """
-    get请求从url中获取数据
-    """
-    # 这是一个不可变的字典
-    params = request.args
-    name = params.get('name',default='Lnn')
-    app.logger.info(f'name: {name}')
-    return f'Hello, World! {name}'
+from routes.book_routes import book_bp
 
-@app.route('/login',methods=['POST'])
-def login():
-    """
-    post请求从表单中获取数据
-    """
-    username = request.form.get('username',default='')
-    password = request.form.get('password',default='')
-    app.logger.info(f"login user: {username}")
-    return {
-        'username':username,
-        'password':password
-    }
+
+def create_app():
+    app = Flask(__name__)
+
+    # 设置全局日志级别（DEBUG/INFO/WARNING/ERROR/CRITICAL）
+    app.logger.setLevel("INFO")
+
+    # 注册蓝图
+    from routes.common_routes import common_bp
+    from routes.user_routes import user_bp
+    app.register_blueprint(common_bp,url_prefix='/')
+    app.register_blueprint(user_bp,url_prefix='/user')
+    app.register_blueprint(book_bp,url_prefix='/book')
+
+    return app
+
 
 if __name__ == '__main__':
+    app = create_app()
     app.run(host='localhost', port=10010)

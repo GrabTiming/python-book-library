@@ -12,4 +12,4 @@ A: 输入 deactivate 退出虚拟环境
 ## 2025.07.04 
 11:07 
 Q: 怎么将接口放到不同的文件？
-A: 
+A: 使用blueprints，如果要在蓝图中访问app，使用current_app，比如说打印日志等操作

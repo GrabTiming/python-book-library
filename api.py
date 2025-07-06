@@ -1,12 +1,10 @@
 """
 程序启动入口
 """
-import json
-from sys import prefix
-from typing import Dict, List, Any, Optional
 
 from flask import Flask
 
+from database import db_pool
 from routes.book_routes import book_bp
 
 
@@ -22,6 +20,12 @@ def create_app():
     app.register_blueprint(common_bp,url_prefix='/')
     app.register_blueprint(user_bp,url_prefix='/user')
     app.register_blueprint(book_bp,url_prefix='/book')
+
+    # 初始化数据库
+    db_pool.init_db(app)
+    
+    # 导入所有模型以确保表被创建
+    import models
 
     return app
 

@@ -1,4 +1,9 @@
+from sys import exception
+
 from flask import request, current_app, Blueprint
+
+from database.db_pool import db
+from models import User
 
 common_bp = Blueprint('common', __name__)
 
@@ -23,7 +28,34 @@ def login():
 
 @common_bp.route('register', methods=['POST'])
 def register():
-    pass
+    username = request.json.get('username', default=None)
+    password = request.json.get('password', default=None)
+    if username is None or password is None:
+        return {
+            'code': 520,
+            'message': '缺少参数'
+        }
+
+    try:
+        user = User(username=username, password_hash=password, email='', nickname=username, avatar='')
+
+        db.session.add(user)
+        db.session.commit()
+
+        current_app.logger.info(f"新注册用户: {user.username}")
+
+        return {
+            'code': 200,
+            'msg': 'ok'
+        }
+    except exception as e :
+        db.session.rollback()
+        current_app.logger.error(f"用户注册失败: {str(e)}")
+        return {
+            'code': 520,
+            'msg': '用户注册失败'
+        }
+
 
 @common_bp.route('hello')
 def hello():
